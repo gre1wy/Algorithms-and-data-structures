@@ -204,13 +204,34 @@ func (q *LinkedListQueue) Display() {
 	fmt.Println()
 }
 
+// Фабрика черг
+func getQueue(queueType string) (Queue, error) {
+	switch queueType {
+	case "LinkedListQueue":
+		return NewLinkedListQueue(), nil
+
+	case "CircularArrayQueue":
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Вкажіть розмір кільцевої черги(додатнє число):")
+		s, _ := reader.ReadString('\n')
+		s = strings.TrimSpace(s)
+		limit, err := strconv.ParseInt(s, 10, 0)
+		if err != nil || limit < 0 {
+			fmt.Println("Неправильний формат розміру. Введіть натуральне число.")
+			userInteraction()
+		}
+		return NewCircularArrayQueue(int(limit)), nil
+	}
+	return nil, fmt.Errorf("Wrong gun type passed")
+}
+
 func userInteraction() {
 	var queue Queue
 
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("Виберіть структуру для реалізації черги:")
-	fmt.Println("1 - Масив(кільцева черга)")
+	fmt.Println("1 - Масив (кільцева черга)")
 	fmt.Println("2 - Звязний список")
 	fmt.Println("0 - Для виходу")
 
@@ -219,18 +240,11 @@ func userInteraction() {
 
 	switch choice {
 	case "1":
-		fmt.Println("Вкажіть розмір кільцевої черги(додатнє число):")
-		s, _ := reader.ReadString('\n')
-		limit, err := strconv.ParseInt(s, 10, 0)
-		if err != nil || limit < 0 {
-			fmt.Println("Неправильний формат розміру. Введіть натуральне число.")
-			userInteraction()
-		}
-		queue = NewCircularArrayQueue(int(limit))
+		queue, _ = getQueue("CircularArrayQueue")
 	case "2":
-		queue = NewLinkedListQueue()
+		queue, _ = getQueue("LinkedListQueue")
 	case "0":
-		break
+		os.Exit(0)
 	default:
 		fmt.Println("Неправильний вибір операції. Введіть 1-2, або 0 для того щоб вийти.")
 		userInteraction()
@@ -253,16 +267,16 @@ func userInteraction() {
 		switch operation {
 		case "1":
 			fmt.Println("Введіть елемент для вставки в чергу:")
-			fmt.Println("Для відміни вставки напишіть 'back'")
+			fmt.Println("Для відміни вставки напишіть 'cancel'")
 			itemInput, _ := reader.ReadString('\n')
 			itemInput = strings.TrimSpace(itemInput)
 
-			if itemInput == "back" {
+			if itemInput == "cancel" {
 				return
 			}
 
 			queue.Enqueue(itemInput)
-			fmt.Printf("Елемент %v успішно додан.", itemInput)
+
 		case "2":
 			item := queue.Dequeue()
 			if item == nil {
