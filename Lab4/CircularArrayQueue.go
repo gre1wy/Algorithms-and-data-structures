@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -13,14 +14,17 @@ type CircularArrayQueue struct {
 }
 
 // NewCircularArrayQueue функція конструктор
-func NewCircularArrayQueue(capacity int) *CircularArrayQueue {
+func NewCircularArrayQueue(capacity int) (*CircularArrayQueue, error) {
+	if capacity < 0 {
+		return nil, errors.New("capacity must be non-negative")
+	}
 	return &CircularArrayQueue{
 		items:    make([]interface{}, capacity),
 		capacity: capacity,
 		size:     0,
 		head:     0,
 		tail:     0,
-	}
+	}, nil
 }
 
 // Enqueue додає елемент в кінець черги
@@ -34,7 +38,7 @@ func (q *CircularArrayQueue) Enqueue(item interface{}) {
 	q.size++
 }
 
-// Dequeue видаляє и повертає елемент з початку черги
+// Dequeue "видаляє" и повертає елемент з початку черги
 func (q *CircularArrayQueue) Dequeue() interface{} {
 	if q.IsEmpty() {
 		fmt.Println("Queue is empty")

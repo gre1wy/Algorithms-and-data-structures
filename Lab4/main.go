@@ -22,9 +22,9 @@ func userInteraction() {
 
 	switch choice {
 	case "1":
-		queue, _ = getQueue("CircularArrayQueue")
+		queue, _ = getQueue("CircularArrayQueue", os.Stdin)
 	case "2":
-		queue, _ = getQueue("LinkedListQueue")
+		queue, _ = getQueue("LinkedListQueue", nil)
 	case "0":
 		os.Exit(0)
 	default:

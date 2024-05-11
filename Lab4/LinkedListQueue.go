@@ -6,7 +6,7 @@ import (
 
 // Node представляє вузол для звязного списку
 type Node struct {
-	data interface{}
+	data any
 	next *Node
 }
 
